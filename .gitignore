@@ -73,7 +73,7 @@ instance/
 docs/_build/
 
 *.pdf
-
+*.txt
 # PyBuilder
 .pybuilder/
 target/

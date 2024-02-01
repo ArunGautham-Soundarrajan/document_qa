@@ -21,6 +21,8 @@ chromadb = "^0.4.22"
 sentence-transformers = "2.2.2"
 instructorembedding = "^1.0.1"
 pypdf = "^4.0.1"
+langchain-experimental = "^0.0.50"
+tiktoken = "^0.5.2"
 
 [[tool.poetry.source]]
 name = "pytorch"
