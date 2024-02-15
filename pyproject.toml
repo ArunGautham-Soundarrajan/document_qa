@@ -2,7 +2,7 @@
 name = "document-qa"
 version = "0.1.0"
 description = ""
-authors = ["Your Name <you@example.com>"]
+authors = ["Arun Gautham Soundarrajan <arungautham60@gmail..com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
@@ -22,12 +22,21 @@ sentence-transformers = "2.2.2"
 instructorembedding = "^1.0.1"
 pypdf = "^4.0.1"
 langchain-experimental = "^0.0.50"
-tiktoken = "^0.5.2"
+tiktoken = "0.5.1"
+pymilvus = "2.3.6"
+python-multipart = "^0.0.7"
+dynaconf = "^3.2.4"
+sqlalchemy = "^2.0.25"
+openai = "^1.12.0"
 
 [[tool.poetry.source]]
 name = "pytorch"
 url = "https://download.pytorch.org/whl/nightly/cpu"
 priority = "explicit"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.2.0"
 
 [build-system]
 requires = ["poetry-core"]
