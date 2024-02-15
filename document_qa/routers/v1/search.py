@@ -7,10 +7,11 @@ from vector_search.milvus_client import Milvus
 router = APIRouter(
     prefix="/search",
     responses={404: {"description": "Not found"}},
+    tags=["Vector Search"],
 )
 
 
-@router.post("/", response_model=SearchResult)
+@router.post("", response_model=SearchResult)
 async def vector_search(
     request: Request, item: SearchItem, vector_db: Milvus = Depends(get_db)
 ):

@@ -15,7 +15,25 @@ async def lifespan(app: FastAPI):
     yield {"text_embedder": TextEmbedding()}
 
 
-app = FastAPI(lifespan=lifespan)
+tags_metadata = [
+    {
+        "name": "Files",
+        "description": "Operations with uploading, listing and deleting Files.",
+    },
+    {
+        "name": "Vector Search",
+        "description": "Operaetions with doing vector search and generating responses",
+    },
+]
+
+
+app = FastAPI(
+    title="Document Q&A",
+    summary="API to upload pdf and ask questions",
+    version="0.0.1",
+    lifespan=lifespan,
+    openapi_tags=tags_metadata,
+)
 origins = ["*"]
 
 app.add_middleware(
