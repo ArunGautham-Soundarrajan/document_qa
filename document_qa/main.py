@@ -32,5 +32,4 @@ app.include_router(search.router)
 
 @app.get("/")
 async def health(request: Request):
-    print(request.state.model)
     return Response("Server is running.")
