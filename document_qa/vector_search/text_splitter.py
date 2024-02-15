@@ -2,9 +2,9 @@ from functools import partial
 from typing import List
 
 from langchain.text_splitter import (
-    CharacterTextSplitter,
     RecursiveCharacterTextSplitter,
     SentenceTransformersTokenTextSplitter,
+    TokenTextSplitter,
 )
 from langchain_core.documents import Document
 from textacy import preprocessing
@@ -12,11 +12,8 @@ from transformers import GPT2TokenizerFast
 
 
 class TextSplitter:
-    def __init__(self, text: str, preprocessing: bool = True) -> None:
-        if preprocessing:
-            self.text = self.normalizing_text(text)
-        else:
-            self.text = text
+    def __init__(self, preprocessing: bool = True) -> None:
+        self.preprocessing = preprocessing
 
     def normalizing_text(self, text: str) -> str:
         preproc = preprocessing.make_pipeline(
@@ -37,10 +34,13 @@ class TextSplitter:
 
     def split_by_char(
         self,
+        text: str,
         chunk_size: int,
         chunk_overlap: int,
         is_separator_regex: bool = False,
-    ) -> List[Document]:
+    ) -> List[str]:
+        if preprocessing:
+            text = self.normalizing_text(text)
         text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=chunk_size,
             chunk_overlap=chunk_overlap,
@@ -48,14 +48,17 @@ class TextSplitter:
             is_separator_regex=is_separator_regex,
         )
 
-        return text_splitter.create_documents([self.text])
+        return text_splitter.split_text(text)
 
     def st_split_by_token(
         self,
+        text: str,
         tokens_per_chunk: int,
         chunk_overlap: int,
         model_name: str = "sentence-transformers/all-mpnet-base-v2",
-    ) -> List[Document]:
+    ) -> List[str]:
+        if preprocessing:
+            text = self.normalizing_text(text)
         tokens_per_chunk = tokens_per_chunk if tokens_per_chunk <= 384 else 384
         text_splitter = SentenceTransformersTokenTextSplitter(
             model_name=model_name,
@@ -63,19 +66,32 @@ class TextSplitter:
             chunk_overlap=chunk_overlap,
         )
 
-        return text_splitter.create_documents([self.text])
+        return text_splitter.split_text(text)
 
     # TODO: Find a way to change a seperator
     def hf_split_by_token(
         self,
+        text: str,
         chunk_size: int,
         chunk_overlap: int,
-    ) -> List[Document]:
+    ) -> List[str]:
+        if preprocessing:
+            text = self.normalizing_text(text)
         tokenizer = GPT2TokenizerFast.from_pretrained("gpt2")
-        text_splitter = CharacterTextSplitter.from_huggingface_tokenizer(
+        text_splitter = RecursiveCharacterTextSplitter.from_huggingface_tokenizer(
             tokenizer=tokenizer,
             chunk_size=chunk_size,
             chunk_overlap=chunk_overlap,
         )
 
-        return text_splitter.split_text(self.text)
+        return text_splitter.split_text(text)
+
+    def tiktoken_split_by_token(
+        self, text: str, chunk_size: int, chunk_overlap: int
+    ) -> List[str]:
+        if preprocessing:
+            text = self.normalizing_text(text)
+        text_splitter = TokenTextSplitter(
+            chunk_size=chunk_size, chunk_overlap=chunk_overlap
+        )
+        return text_splitter.split_text(text)
