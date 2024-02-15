@@ -1,0 +1,9 @@
+[default]
+sql_db_path = "sqlite:///database/document_qa.db"
+
+[default.milvus]
+collection_name = "pdf_documents"
+
+[default.open_ai]
+model = "gpt-3.5-turbo"
+
