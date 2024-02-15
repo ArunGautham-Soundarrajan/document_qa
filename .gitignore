@@ -163,3 +163,7 @@ cython_debug/
 #.idea/
 
 .zed
+
+# SQLITE db
+
+**.db
