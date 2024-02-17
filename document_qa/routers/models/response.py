@@ -1,8 +1,8 @@
-from typing import Dict
+from typing import Dict, List
 
 from pydantic import BaseModel
 
 
 class SearchResult(BaseModel):
     generated_answer: str
-    sources: Dict
+    sources: List[str]

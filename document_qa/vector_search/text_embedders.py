@@ -29,7 +29,7 @@ class TextEmbedding:
             )
             context += entity["entity"]["text"]
 
-        return sources, context
+        return list(sorted(set(sources))), context
 
     def generate_response(self, question: str, context: str) -> str:
         completion = self.open_ai.chat.completions.create(
