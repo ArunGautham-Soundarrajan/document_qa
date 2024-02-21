@@ -14,13 +14,13 @@ router = APIRouter(
 )
 
 
-@router.get("", response_model=list[Item])
+@router.get("/", response_model=list[Item])
 async def list_files(db: Session = Depends(get_sql_db)):
     documents = get_all_documents(db=db)
     return documents
 
 
-@router.post("", response_model=Item)
+@router.post("/", response_model=Item)
 async def upload_file(
     request: Request,
     file: UploadFile,
