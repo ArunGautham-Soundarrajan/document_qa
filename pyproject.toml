@@ -2,7 +2,7 @@
 name = "document-qa"
 version = "0.1.0"
 description = ""
-authors = ["Arun Gautham Soundarrajan <arungautham60@gmail..com>"]
+authors = ["Arun Gautham Soundarrajan <arungautham60@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
