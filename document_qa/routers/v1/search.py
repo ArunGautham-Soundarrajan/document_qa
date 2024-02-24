@@ -15,6 +15,13 @@ router = APIRouter(
 async def vector_search(
     request: Request, item: SearchItem, vector_db: Milvus = Depends(get_db)
 ):
+    """Perform vector serach and generate LLM response
+
+    :param Request request: Web request object
+    :param SearchItem item: Document id and question
+    :param Milvus vector_db: Milvus client session, defaults to Depends(get_db)
+    :return _type_: Generated response and source for the response
+    """
     question_embedding = request.state.text_embedder.embed_query(item.question)
     results = vector_db.vector_search(
         question_embedding=question_embedding, doc_id=item.doc_id

@@ -4,6 +4,10 @@ from database.database import SessionLocal
 
 
 async def get_db():
+    """Create Milvus database session
+
+    :yield _type_: database session
+    """
     COLLECTION_NAME = settings.milvus.collection_name
     URI = settings.milvus.uri
     TOKEN = settings.milvus.token
@@ -15,6 +19,10 @@ async def get_db():
 
 
 def get_sql_db():
+    """Create SQL lite database session
+
+    :yield _type_: database session
+    """
     db = SessionLocal()
     try:
         yield db

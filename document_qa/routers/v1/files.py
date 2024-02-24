@@ -16,6 +16,11 @@ router = APIRouter(
 
 @router.get("/", response_model=list[Item])
 async def list_files(db: Session = Depends(get_sql_db)):
+    """List all the files in the db
+
+    :param Session db: SQLite db session, defaults to Depends(get_sql_db)
+    :return _type_: List of documenents, id, processed status
+    """
     documents = get_all_documents(db=db)
     return documents
 
@@ -27,6 +32,14 @@ async def upload_file(
     vector_db: Milvus = Depends(get_db),
     db: Session = Depends(get_sql_db),
 ):
+    """Upload a new document and performs extracting text and uploading it to Milvus db
+
+    :param Request request: Client Request
+    :param UploadFile file: Uplaoded file object
+    :param Milvus vector_db: Milvus client session, defaults to Depends(get_db)
+    :param Session db: SQLite db session, defaults to Depends(get_sql_db)
+    :return _type_: Returns document name, id, processed status
+    """
     # Store the document information in SQL
     item = DocumentBase(file_name=file.filename)
     result = create_document_item(db=db, item=item)
@@ -53,6 +66,13 @@ async def upload_file(
 async def delete_file(
     doc_id: str, vector_db: Milvus = Depends(get_db), db: Session = Depends(get_sql_db)
 ):
+    """Delete a document from the db
+
+    :param str doc_id: ID of the document to delete
+    :param Milvus vector_db: Milvus db client, defaults to Depends(get_db)
+    :param Session db: SQLite db session, defaults to Depends(get_sql_db)
+    :return _type_: status of the operation
+    """
     try:
         vector_db.delete_entity(doc_id=doc_id)
         return {"message": "success"}
