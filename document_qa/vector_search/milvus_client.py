@@ -16,19 +16,34 @@ schema = CollectionSchema(fields=fields)
 
 
 class Milvus:
+    """Milvus client"""
 
     def __init__(self, uri: str, token: str, collection_name: str) -> None:
+        """Initialise the milvus client
+
+        :param str uri: Cluster endpoint
+        :param str token: API key or a colon-separated cluster username and password
+        :param str collection_name: Name of the collection to work with
+        """
         self.client = MilvusClient(
-            uri=uri,  # Cluster endpoint obtained from the console
-            token=token,  # API key or a colon-separated cluster username and password
+            uri=uri,
+            token=token,
         )
 
         self.collection_name = collection_name
 
     def set_collection_name(self, collection_name: str):
+        """Set the default collection name to work with
+
+        :param str collection_name: Name of the collection
+        """
         self.collection_name = collection_name
 
     def list_collection(self):
+        """Lists all the collection in the db
+
+        :return _type_: List of all the collections
+        """
         return self.client.list_collections()
 
     def create_collection(
@@ -41,7 +56,15 @@ class Milvus:
             "params": {"nlist": 1024},
         },
         dimension: int = 768,
-    ):
+    ) -> bool:
+        """Create a new collection
+
+        :param str collection_name: Name of the collection
+        :param CollectionSchema schema: Schema of the collection
+        :param _type_ index_params: Parameters to index each documents, defaults to { "metric_type": "L2", "index_type": "IVF_FLAT", "params": {"nlist": 1024}, }
+        :param int dimension: Dimension of the vector field, defaults to 768
+        :return bool: Status of the operation
+        """
         try:
             self.client.create_collection_with_schema(
                 collection_name=collection_name,
@@ -56,19 +79,37 @@ class Milvus:
             raise e
 
     def drop_collection(self, collection_name: str):
+        """Drop the collection
+
+        :param str collection_name: Name of the collection to drop
+        """
         self.client.drop_collection(collection_name=collection_name)
 
     def list_collection_info(
         self,
     ):
+        """List information about the selected collection
+
+        :return _type_: List of information about the collection
+        """
         return self.client.describe_collection(collection_name=self.collection_name)
 
     def insert_to_collection(self, data: List[Dict] | Dict):
+        """Insert data into collection
+
+        :param List[Dict] | Dict data: Data in the structure specified in the schema
+        :return _type_: List of index for the respective inserted data
+        """
         return self.client.insert(
             collection_name=self.collection_name, data=data, progress_bar=True
         )
 
     def delete_entity(self, doc_id: str | int | List[str | int]):
+        """Delete Entities from the collection
+
+        :param str | int | List[str  |  int] doc_id: List of doc id to delete
+        :return _type_: _description_
+        """
         # query to get the list of primary keys to delete
         res = self.client.query(
             collection_name=self.collection_name,
@@ -84,6 +125,13 @@ class Milvus:
         limit: int = 5,
         doc_id: str | None = None,
     ):
+        """Perform vector search and retrieve relavant entities
+
+        :param List[float] question_embedding: Vectorized question to query against
+        :param int limit: Top k results, defaults to 5
+        :param str | None doc_id: List of document to perform search against, defaults to None
+        :return _type_: Top k entities including document name, page number and text
+        """
         return self.client.search(
             collection_name=self.collection_name,
             data=question_embedding,
@@ -93,4 +141,8 @@ class Milvus:
         )
 
     def close_connection(self):
+        """Close the Milvus client connection
+
+        :return _type_: _description_
+        """
         return self.client.close()
