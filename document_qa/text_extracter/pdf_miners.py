@@ -15,6 +15,17 @@ def extract_text(
     embedder: TextEmbedding,
     pages: tuple[int, int] | None = None,
 ) -> List[Dict]:
+    """Extract, chunk it, vectorise the text from a PDF
+
+    :param str file_name: name of the pdf document
+    :param bytes file_content: pdf document object
+    :param str doc_id: uuid for the document
+    :param Callable text_splitter: Langchain text splitter function
+    :param Dict params: Any parameters for the text splitter function
+    :param TextEmbedding embedder: TextEmbedder object to vectorise the text
+    :param tuple[int, int] | None pages: Page number slice to extract, defaults to None
+    :return List[Dict]: dictionary of each chunk with its embeddings, and other meta data
+    """
 
     extracted_text = []
     with fitz.open(filetype="pdf", stream=BytesIO(file_content)) as doc:
