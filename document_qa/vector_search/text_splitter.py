@@ -12,10 +12,17 @@ from transformers import GPT2TokenizerFast
 
 
 class TextSplitter:
+    """Langchain text splitters"""
+
     def __init__(self, preprocessing: bool = True) -> None:
         self.preprocessing = preprocessing
 
     def normalizing_text(self, text: str) -> str:
+        """Preprocess the input text
+
+        :param str text: Text to preprocess
+        :return str: Preprocessed and normalised text
+        """
         preproc = preprocessing.make_pipeline(
             preprocessing.normalize.hyphenated_words,
             preprocessing.normalize.quotation_marks,
@@ -39,6 +46,14 @@ class TextSplitter:
         chunk_overlap: int,
         is_separator_regex: bool = False,
     ) -> List[str]:
+        """Split the text by character
+
+        :param str text: Text to split
+        :param int chunk_size: Size of each chunk
+        :param int chunk_overlap: Overlap between each chunks
+        :param bool is_separator_regex: _description_, defaults to False
+        :return List[str]: List of chunks
+        """
         if preprocessing:
             text = self.normalizing_text(text)
         text_splitter = RecursiveCharacterTextSplitter(
@@ -57,6 +72,14 @@ class TextSplitter:
         chunk_overlap: int,
         model_name: str = "sentence-transformers/all-mpnet-base-v2",
     ) -> List[str]:
+        """Split text by token using sentence transformer model
+
+        :param str text: Text to split
+        :param int tokens_per_chunk: Number of tokens per chunk
+        :param int chunk_overlap: Overlap between each chunks
+        :param str model_name: Name of the sentencetransformer model, defaults to "sentence-transformers/all-mpnet-base-v2"
+        :return List[str]: List of chunks
+        """
         if preprocessing:
             text = self.normalizing_text(text)
         tokens_per_chunk = tokens_per_chunk if tokens_per_chunk <= 384 else 384
@@ -75,6 +98,13 @@ class TextSplitter:
         chunk_size: int,
         chunk_overlap: int,
     ) -> List[str]:
+        """Split text by token using Huggingface model
+
+        :param str text: Text to split
+        :param int chunk_size: Size of each chunk
+        :param int chunk_overlap: Overlap between each chunks
+        :return List[str]: List of chunks
+        """
         if preprocessing:
             text = self.normalizing_text(text)
         tokenizer = GPT2TokenizerFast.from_pretrained("gpt2")
@@ -89,6 +119,13 @@ class TextSplitter:
     def tiktoken_split_by_token(
         self, text: str, chunk_size: int, chunk_overlap: int
     ) -> List[str]:
+        """Split the text using tiktoken which is for Open AI models
+
+        :param str text: Text to split
+        :param int chunk_size: Size of each chunk
+        :param int chunk_overlap: Overlap between each chunks
+        :return List[str]: List of chunks
+        """
         if preprocessing:
             text = self.normalizing_text(text)
         text_splitter = TokenTextSplitter(
